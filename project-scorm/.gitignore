@@ -1,5 +1,6 @@
 # compiled output
 /dist
+/upload-file-scorm
 /node_modules
 /build
 

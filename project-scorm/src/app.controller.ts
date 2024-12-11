@@ -13,6 +13,8 @@ import { Express } from 'express';
 import { memoryStorage } from 'multer';
 import * as AdmZip from 'adm-zip';
 import * as xml2js from 'xml2js';
+import * as fs from 'fs';
+import * as path from 'path';
 
 @Controller('scorm')
 export class AppController {
@@ -80,6 +82,8 @@ export class AppController {
 
     // Load file buffer into ZIP
     const zip = new AdmZip(file.buffer);
+    // save resources
+    this.saveScormResources(zip);
 
     // Extract imsmanifest.xml from the uploaded ZIP
     const manifestEntry = zip.getEntry('imsmanifest.xml');
@@ -92,9 +96,15 @@ export class AppController {
     const parser = new xml2js.Parser();
     const parsedManifest = await parser.parseStringPromise(manifestData);
 
-    return {
-      message: 'SCORM file parsed successfully!',
-      parsedManifest
-    };
+    return parsedManifest;
+  }
+
+  saveScormResources(zip: AdmZip) {
+    const saveDir = path.join(__dirname, '..', 'upload-file-scorm');
+    if (!fs.existsSync(saveDir)) {
+      fs.mkdirSync(saveDir, { recursive: true });
+    }
+
+    zip.extractAllTo(saveDir, true);
   }
 }
