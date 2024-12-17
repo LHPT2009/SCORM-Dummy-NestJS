@@ -7,8 +7,8 @@ import { join } from 'path';
 @Module({
   imports: [
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'upload-file-scorm/res'),
-      serveRoot: '/static',
+      rootPath: join(__dirname, '..', 'upload-file-scorm'),
+      serveRoot: '/scorm-content',
     }),
   ],
   controllers: [AppController],
