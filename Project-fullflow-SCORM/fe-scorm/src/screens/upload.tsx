@@ -4,7 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useForm, Controller } from 'react-hook-form';
 import { InboxOutlined } from "@ant-design/icons";
-import JSZip from "jszip";
+import axios from "axios";
 
 const { Dragger } = Upload;
 
@@ -35,12 +35,9 @@ const UploadPage: React.FC = () => {
     );
 
     const [status, setStatus] = useState(false);
+    const [urlHTML, setUrlHTML] = useState("")
 
     const [fileListArr, setFileListArr] = useState<any[]>([]);
-
-    const [files, setFiles] = useState<{ name: string; content: string }[]>([]);
-
-    const [imsManifestContent, setImsManifestContent] = useState<string>("");
 
     const handleclear = () => {
         reset()
@@ -51,26 +48,27 @@ const UploadPage: React.FC = () => {
     const handleFileUpload = async (event: any) => {
         const file = event.file[0]?.originFileObj;
 
-        if (file) {
-            const zip = new JSZip();
-            try {
-                const zipContent = await zip.loadAsync(file);
-                const extractedFiles: { name: string; content: string }[] = [];
+        if (!file) {
+            console.error('No file selected!');
+            return;
+        }
 
-                for (const fileName of Object.keys(zipContent.files)) {
-                    const fileData = await zipContent.files[fileName].async("string");
+        const formData = new FormData();
+        formData.append('file', file);
 
-                    if (fileName === "imsmanifest.xml") {
-                        setImsManifestContent(fileData);
-                    }
-                    extractedFiles.push({ name: fileName, content: fileData });
+        try {
+            await axios.post('http://localhost:4000/scorm/save', formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
                 }
-
-                setFiles(extractedFiles);
-                setStatus(true)
-            } catch (error) {
-                console.error("Error parsing ZIP file:", error);
-            }
+            })
+                .then((item) => {
+                    setStatus(true);
+                    setUrlHTML(item.data);
+                })
+                .catch((err) => { console.log(err); });
+        } catch (error) {
+            console.error('Error uploading file:', error);
         }
     };
 
@@ -149,13 +147,11 @@ const UploadPage: React.FC = () => {
                     </Form.Item>
                 </Form>
             </> : <>
-                <Button onClick={handleclear}>clear state</Button>
-                <h3>imsmanifest.xml Content:</h3>
-                {imsManifestContent && (
-                    <pre style={{ backgroundColor: "#f4f4f4", padding: "10px", borderRadius: "5px", fontSize: "14px" }}>
-                        {imsManifestContent}
-                    </pre>
-                )}
+                <Button size="large" onClick={handleclear} type="primary">clear state</Button>
+
+                <Flex vertical justify="center" align="center" style={{ marginTop: "20px" }}>
+                    <iframe src={urlHTML} width="1200" height="800" title="Iframe Example" />
+                </Flex>
             </>}
         </>
     );
