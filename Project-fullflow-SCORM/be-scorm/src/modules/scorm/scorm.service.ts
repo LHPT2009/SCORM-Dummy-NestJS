@@ -46,7 +46,7 @@ export class ScormService {
     return this.scormRepository.findOne({ where: { userId } });
   }
 
-  async saveScormFile(file) {
+  async saveScormFile(file: any) {
     if (!file) {
       throw new Error('No file uploaded!');
     }
@@ -64,7 +64,8 @@ export class ScormService {
     const parsedManifest = await parser.parseStringPromise(manifestData);
 
     const UrlHTML = parsedManifest.manifest.resources[0].resource[0].$.href
-    return `http://localhost:4000/scorm-content/${UrlHTML}`;
+
+    return `http://localhost:3000/scorm-content/${UrlHTML}`;
   }
 
   saveScormResources(zip: AdmZip) {

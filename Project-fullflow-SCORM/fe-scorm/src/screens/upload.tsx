@@ -57,7 +57,7 @@ const UploadPage: React.FC = () => {
         formData.append('file', file);
 
         try {
-            await axios.post('http://localhost:4000/scorm/save', formData, {
+            await axios.post('http://localhost:3000/scorm/upload', formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 }

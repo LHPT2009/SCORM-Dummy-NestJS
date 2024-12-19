@@ -1,5 +1,6 @@
-import { Controller, Get, Param, Post, Body, UploadedFile, ParseFilePipeBuilder } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body, UploadedFile, ParseFilePipeBuilder, UseInterceptors } from '@nestjs/common';
 import { ScormService } from './scorm.service';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('scorm')
 export class ScormController {
@@ -33,6 +34,7 @@ export class ScormController {
     }
   }
 
+  @UseInterceptors(FileInterceptor('file'))
   @Post('upload')
   async saveScormFile(
     @UploadedFile(
