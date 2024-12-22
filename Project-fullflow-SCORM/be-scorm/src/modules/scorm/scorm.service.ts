@@ -63,9 +63,20 @@ export class ScormService {
     const parser = new xml2js.Parser();
     const parsedManifest = await parser.parseStringPromise(manifestData);
 
-    const UrlHTML = parsedManifest.manifest.resources[0].resource[0].$.href
+    const courseTitle =
+      parsedManifest.manifest.organizations[0]?.organization[0]?.title[0] || 'Untitled Course';
 
-    return `http://localhost:3000/scorm-content/${UrlHTML}`;
+    const scoList =
+      parsedManifest.manifest.resources[0]?.resource?.map((resource) => ({
+        id: resource.$.identifier,
+        href: resource.$.href,
+      })) || [];
+
+    return {
+      message: 'SCORM uploaded successfully',
+      courseTitle,
+      scoList,
+    };
   }
 
   saveScormResources(zip: AdmZip) {
@@ -79,4 +90,37 @@ export class ScormService {
 
     zip.extractAllTo(saveDir, true);
   }
+
+  // async getInfoFile(file: any) {
+  //   if (!file) {
+  //     throw new Error('No file uploaded!');
+  //   }
+
+  //   const zip = new AdmZip(file.buffer);
+
+  //   const manifestEntry = zip.getEntry('imsmanifest.xml');
+  //   if (!manifestEntry) {
+  //     throw new Error('imsmanifest.xml not found in uploaded SCORM package');
+  //   }
+
+  //   const manifestData = manifestEntry.getData().toString('utf-8');
+  //   const parser = new xml2js.Parser();
+  //   const parsedManifest = await parser.parseStringPromise(manifestData);
+
+  //   // Trích xuất thông tin từ parsedManifest
+  //   const courseTitle =
+  //     parsedManifest.manifest.organizations[0]?.organization[0]?.title[0] || 'Untitled Course';
+
+  //   const scoList =
+  //     parsedManifest.manifest.resources[0]?.resource?.map((resource) => ({
+  //       id: resource.$.identifier,
+  //       href: resource.$.href,
+  //     })) || [];
+
+  //   return {
+  //     message: 'SCORM uploaded successfully',
+  //     courseTitle,
+  //     scoList,
+  //   };
+  // }
 }
