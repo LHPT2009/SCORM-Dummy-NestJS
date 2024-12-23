@@ -5,7 +5,7 @@ import ContentComponet from "../content";
 import FooterComponet from "../footer";
 import { Outlet } from 'react-router-dom';
 
-const LayoutComponent: React.FC = () => {
+const LayoutComponent = () => {
     return (
         <>
             <Layout style={{ height: "auto", width: "100vw" }}>

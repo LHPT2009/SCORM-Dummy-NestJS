@@ -1,12 +1,7 @@
 import { Flex, Button, Row, Col } from "antd";
 import React, { useState } from "react";
 
-interface UploadPageProps {
-    courseTitle: string;
-    scoList: { id: string; href: string }[];
-}
-
-const ViewPage: React.FC<UploadPageProps> = ({ courseTitle, scoList }) => {
+const ViewPage = ({ courseTitle, scoList }) => {
     const [selectedSco, setSelectedSco] = useState('');
     return (
         <>
@@ -17,8 +12,8 @@ const ViewPage: React.FC<UploadPageProps> = ({ courseTitle, scoList }) => {
                     <Col span={3}>
                         <Flex gap="small" wrap>
                             {scoList
-                                .filter((sco: any) => sco.href)
-                                .map((sco: any, index: number) => (
+                                .filter((sco) => sco.href)
+                                .map((sco, index) => (
                                     <Button key={sco.id} onClick={() => setSelectedSco(sco.href)}>
                                         {index + 1}
                                     </Button>
@@ -34,7 +29,7 @@ const ViewPage: React.FC<UploadPageProps> = ({ courseTitle, scoList }) => {
     );
 };
 
-const ScormPlayer: React.FC<{ scoUrl: string }> = ({ scoUrl }) => {
+const ScormPlayer = ({ scoUrl }) => {
     return (
         <iframe
             src={scoUrl}

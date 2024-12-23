@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SCORM Project</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <script src="js/scorm-api-wrapper.js"></script>
+
+    <script src="js/app.js" defer></script>
+  </head>
+  <body>
+    <h1>Welcome to SCORM Example</h1>
+    <p>This is a sample SCORM package using Pipwerks.</p>
+    <p>Hello, <span id="learner_name">Lap</span>.</p>
+    <div id="content">
+      <h2>Question 1</h2>
+      <p>What is 2 + 2?</p>
+      <button onclick="submitAnswer('q1', '4', '4')">4</button>
+      <button onclick="submitAnswer('q1', '5', '4')">5</button>
+      <button onclick="submitAnswer('q1', '3', '4')">3</button>
+    </div>
+    <div>
+      <p id="result-display"></p>
+    </div>
+    <div>
+      <!-- <button onclick="finishSCORM()">Finish</button> -->
+    </div>
+    <div>
+      <button id="nextButton">Next</button>
+    </div>
+  </body>
+</html>

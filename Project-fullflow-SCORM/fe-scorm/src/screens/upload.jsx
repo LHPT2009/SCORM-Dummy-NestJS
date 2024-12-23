@@ -11,7 +11,7 @@ const { Dragger } = Upload;
 
 const { Title } = Typography
 
-const UploadPage: React.FC = () => {
+const UploadPage = () => {
 
     const schema = yup
         .object({
@@ -37,9 +37,9 @@ const UploadPage: React.FC = () => {
     const [courseTitle, setCourseTitle] = useState('');
     const [scoList, setScoList] = useState([]);
 
-    const [fileListArr, setFileListArr] = useState<any[]>([]);
+    const [fileListArr, setFileListArr] = useState([]);
 
-    const handleFileUpload = async (event: any) => {
+    const handleFileUpload = async (event) => {
         const file = event.file[0]?.originFileObj;
 
         if (!file) {
@@ -122,7 +122,7 @@ const UploadPage: React.FC = () => {
                                         setFileListArr(fileList);
                                     } else {
                                         setFileListArr([]);
-                                        setValue("file", undefined as any);
+                                        setValue("file", undefined);
                                     }
                                 }}
                             >
