@@ -2,15 +2,31 @@ import { Flex, Button, Row, Col } from "antd";
 import React, { useState } from "react";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { LeftCircleOutlined } from "@ant-design/icons"
+import { useSCORM } from "../context/SCORMProvider";
+
 const ViewPage = () => {
     const navigate = useNavigate()
     const location = useLocation();
+    const SCORMApi = useSCORM();
+
     const { courseTitle, scoList } = location.state || {};
     const [selectedSco, setSelectedSco] = useState(scoList[0].href);
+    const [currentIndex, setCurrentIndex] = useState(0);
 
     const handleBacktoUploadPage = () => {
         navigate('/')
     }
+
+    const handleScoChange = (scoHref, index) => {
+        const validScoList = scoList.filter((sco) => sco.href);
+        const progress = ((index + 1) / validScoList.length) * 100;
+
+        SCORMApi.LMSSetValue("progress", `${progress.toFixed(2)}%`);
+        SCORMApi.LMSCommit();
+
+        setSelectedSco(scoHref);
+        setCurrentIndex(index);
+    };
 
     return (
         <>
@@ -20,13 +36,16 @@ const ViewPage = () => {
                     <h1>SCORM Upload</h1>
                 </Flex>
                 {courseTitle && <h2>Course Title: {courseTitle}</h2>}
+                <h3>
+                    Progress: {((currentIndex + 1) / scoList.filter((sco) => sco.href).length * 100).toFixed(2)}%
+                </h3>
                 <Row>
                     <Col span={3}>
                         <Flex gap="small" wrap>
                             {scoList
                                 .filter((sco) => sco.href)
                                 .map((sco, index) => (
-                                    <Button key={sco.id} onClick={() => setSelectedSco(sco.href)}>
+                                    <Button key={sco.id} onClick={() => handleScoChange(sco.href, index)}>
                                         {index + 1}
                                     </Button>
                                 ))}

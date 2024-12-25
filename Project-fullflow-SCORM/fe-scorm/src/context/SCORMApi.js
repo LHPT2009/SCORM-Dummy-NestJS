@@ -7,10 +7,6 @@ const SCORM_API = {
         console.log("SCORM: LMSFinish called.");
         return "true";
     },
-    LMSGetValue: function (key) {
-        console.log(`SCORM: LMSGetValue called for ${key}`);
-        return "";
-    },
     LMSSetValue: function (key, value) {
         console.log(`SCORM: LMSSetValue called for ${key} = ${value}`);
         return "true";
