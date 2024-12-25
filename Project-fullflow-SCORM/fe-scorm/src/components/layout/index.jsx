@@ -8,15 +8,15 @@ import { Outlet } from 'react-router-dom';
 const LayoutComponent = () => {
     return (
         <>
-            <Layout style={{ height: "auto", width: "100vw" }}>
+            <Layout style={{ minHeight: "100vh", width: "100vw" }}>
                 <HeaderComponet>
-                    asd
+
                 </HeaderComponet>
                 <ContentComponet>
                     <Outlet />
                 </ContentComponet>
                 <FooterComponet>
-                    sadas
+                    Scorm Project Application
                 </FooterComponet>
             </Layout>
         </>

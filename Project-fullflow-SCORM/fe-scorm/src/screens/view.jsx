@@ -1,12 +1,24 @@
 import { Flex, Button, Row, Col } from "antd";
 import React, { useState } from "react";
+import { useLocation, useNavigate } from 'react-router-dom';
+import { LeftCircleOutlined } from "@ant-design/icons"
+const ViewPage = () => {
+    const navigate = useNavigate()
+    const location = useLocation();
+    const { courseTitle, scoList } = location.state || {};
+    const [selectedSco, setSelectedSco] = useState(scoList[0].href);
 
-const ViewPage = ({ courseTitle, scoList }) => {
-    const [selectedSco, setSelectedSco] = useState('');
+    const handleBacktoUploadPage = () => {
+        navigate('/')
+    }
+
     return (
         <>
             <div style={{ height: "700px", width: "auto" }}>
-                <h1>SCORM Upload</h1>
+                <Flex style={{ margin: 0, padding: 0 }}>
+                    <LeftCircleOutlined style={{ fontSize: "30px", marginRight: "10px" }} onClick={handleBacktoUploadPage} />
+                    <h1>SCORM Upload</h1>
+                </Flex>
                 {courseTitle && <h2>Course Title: {courseTitle}</h2>}
                 <Row>
                     <Col span={3}>

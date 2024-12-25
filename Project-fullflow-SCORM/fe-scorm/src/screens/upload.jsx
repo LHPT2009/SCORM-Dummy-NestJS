@@ -5,14 +5,15 @@ import * as yup from 'yup';
 import { useForm, Controller } from 'react-hook-form';
 import { InboxOutlined } from "@ant-design/icons";
 import axios from "axios";
-import ViewPage from "./view";
+import { useNavigate } from "react-router-dom";
+// import ViewPage from "./view";
 
 const { Dragger } = Upload;
 
 const { Title } = Typography
 
 const UploadPage = () => {
-
+    const navigate = useNavigate();
     const schema = yup
         .object({
             file: yup
@@ -34,9 +35,6 @@ const UploadPage = () => {
         }
     );
 
-    const [courseTitle, setCourseTitle] = useState('');
-    const [scoList, setScoList] = useState([]);
-
     const [fileListArr, setFileListArr] = useState([]);
 
     const handleFileUpload = async (event) => {
@@ -57,8 +55,7 @@ const UploadPage = () => {
                 }
             })
                 .then((item) => {
-                    setCourseTitle(item.data.courseTitle);
-                    setScoList(item.data.scoList);
+                    navigate('/view', { state: { courseTitle: item.data.courseTitle, scoList: item.data.scoList } })
                 })
                 .catch((err) => { console.log(err); });
         } catch (error) {
@@ -139,10 +136,6 @@ const UploadPage = () => {
                     />
                 </Form.Item>
             </Form>
-            <ViewPage
-                courseTitle={courseTitle}
-                scoList={scoList}
-            />
         </>
     );
 }
