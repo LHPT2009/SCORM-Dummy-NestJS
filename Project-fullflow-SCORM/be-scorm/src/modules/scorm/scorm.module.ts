@@ -10,7 +10,7 @@ import { join } from 'path';
   imports: [
     TypeOrmModule.forFeature([ScormEntity]),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'upload-file-scorm'),
+      rootPath: join(__dirname, '../../../', 'upload-file-scorm'),
       serveRoot: '/scorm-content',
     }),],
   controllers: [ScormController],

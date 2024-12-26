@@ -80,7 +80,7 @@ export class ScormService {
   }
 
   saveScormResources(zip: AdmZip) {
-    const saveDir = path.join(__dirname, '..', 'upload-file-scorm');
+    const saveDir = path.join(__dirname, '../../../', 'upload-file-scorm');
 
     if (fs.existsSync(saveDir)) {
       fs.rmSync(saveDir, { recursive: true, force: true });
@@ -89,5 +89,46 @@ export class ScormService {
     fs.mkdirSync(saveDir, { recursive: true });
 
     zip.extractAllTo(saveDir, true);
+  }
+
+  async infoScormFile(file: any) {
+    if (!file) {
+      throw new Error('No file uploaded!');
+    }
+
+    try {
+      const zip = new AdmZip(file.buffer);
+      this.saveScormResources(zip);
+
+      // Kiểm tra xem file imsmanifest.xml có tồn tại không
+      const manifestEntry = zip.getEntry('imsmanifest.xml');
+      if (!manifestEntry) {
+        throw new Error('imsmanifest.xml not found in uploaded SCORM package');
+      }
+
+      // Đọc nội dung của imsmanifest.xml
+      const manifestData = manifestEntry.getData().toString('utf-8');
+      const parser = new xml2js.Parser({ explicitArray: true });
+      const parsedManifest = await parser.parseStringPromise(manifestData);
+
+      // Trích xuất thông tin từ manifest
+      const resources = parsedManifest.manifest.resources?.[0]?.resource || [];
+
+      // Lấy danh sách file HTML từ resources
+      const htmlFiles = resources.flatMap((resource: any) => {
+        const resourceFiles = resource.file?.map((file: any) => file.$.href) || [];
+        return resourceFiles.filter((fileHref: string) => fileHref.endsWith('.html')).map((htmlFile: string) => ({
+          htmlFile,
+          resourceId: resource.$.identifier,
+        }));
+      });
+
+      // Trả về danh sách file HTML
+      return {
+        htmlFiles,
+      };
+    } catch (error) {
+      throw new Error(`Error processing SCORM file: ${error.message}`);
+    }
   }
 }

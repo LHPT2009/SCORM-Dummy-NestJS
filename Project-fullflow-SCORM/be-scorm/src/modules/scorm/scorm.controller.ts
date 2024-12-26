@@ -47,4 +47,18 @@ export class ScormController {
   ) {
     return await this.scormService.saveScormFile(file);
   }
+
+  @UseInterceptors(FileInterceptor('file'))
+  @Post('view')
+  async infoScormFile(
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .build({
+          fileIsRequired: true,
+        }),
+    )
+    file: Express.Multer.File,
+  ) {
+    return await this.scormService.infoScormFile(file);
+  }
 }
