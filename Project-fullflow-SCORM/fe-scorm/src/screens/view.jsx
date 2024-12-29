@@ -1,13 +1,26 @@
 import { Flex, Button, Row, Col } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { LeftCircleOutlined } from "@ant-design/icons"
-import { useSCORM } from "../context/SCORMProvider";
+import SCORM_API from "../context/SCORMApi";
 
 const ViewPage = () => {
     const navigate = useNavigate()
     const location = useLocation();
-    const SCORMApi = useSCORM();
+
+    useEffect(() => {
+        return () => {
+            console.log('________________________')
+            SCORM_API.LMSInitialize();
+
+            SCORM_API.LMSSetValue("cmi.core.lesson_status", "incomplete");
+            SCORM_API.LMSSetValue("cmi.core.score.raw", "85");
+            SCORM_API.LMSSetValue("cmi.core.student_name", "John Doe");
+
+            SCORM_API.LMSCommit();
+            SCORM_API.LMSFinish();
+        };
+    }, []);
 
     const { courseTitle, scoList } = location.state || {};
     const [selectedSco, setSelectedSco] = useState(scoList[0].href);
@@ -18,15 +31,12 @@ const ViewPage = () => {
     }
 
     const handleScoChange = (scoHref, index) => {
-        const validScoList = scoList.filter((sco) => sco.href);
-        const progress = ((index + 1) / validScoList.length) * 100;
-
-        SCORMApi.LMSSetValue("progress", `${progress.toFixed(2)}%`);
-        SCORMApi.LMSCommit();
-
+        // const validScoList = scoList.filter((sco) => sco.href);
+        // const progress = ((index + 1) / validScoList.length) * 100;
         setSelectedSco(scoHref);
         setCurrentIndex(index);
     };
+
 
     return (
         <>
@@ -45,7 +55,7 @@ const ViewPage = () => {
                             {scoList
                                 .filter((sco) => sco.href)
                                 .map((sco, index) => (
-                                    <Button key={sco.id} onClick={() => handleScoChange(sco.href, index)}>
+                                    <Button key={`${sco.id}-${index}`} onClick={() => handleScoChange(sco.href, index)}>
                                         {index + 1}
                                     </Button>
                                 ))}
