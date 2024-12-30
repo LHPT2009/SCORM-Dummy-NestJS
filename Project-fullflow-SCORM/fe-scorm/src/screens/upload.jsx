@@ -6,7 +6,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { InboxOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-// import ViewPage from "./view";
+import SCORM_API from "../context/SCORMApi";
 
 const { Dragger } = Upload;
 
@@ -55,6 +55,7 @@ const UploadPage = () => {
                 }
             })
                 .then((item) => {
+                    SCORM_API.LMSInitialize("");
                     navigate('/view', { state: { courseTitle: item.data.courseTitle, scoList: item.data.scoList } })
                 })
                 .catch((err) => { console.log(err); });
